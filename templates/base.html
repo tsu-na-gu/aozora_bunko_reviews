@@ -18,7 +18,7 @@
         }
     </style>
    {% tailwind_css %}
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}Aozora Bunko Reviews{% endblock %}</title>
 </head>
 <body class="height: 100% m-0 flex flex-col">
     {% load static %}
@@ -33,7 +33,10 @@
 {% endblock %}
 <div class="mt-auto h-[30px] bg-blue-800 flex justify-between text-white md:px-20 pt-2 pb-4 text-sm">
     <div>Copyright © Hiroaki Satou</div>
-    <div><a href={% url 'index' %}>Home</a></div>
+    <div class="flex gap-4 ">
+        <a class="text-white hover:text-neutral-300 active:text-neutral-600" href="{% url 'index' %}">Home</a>
+        <a class="text-white hover:text-neutral-300 active:text-neutral-600" href="{% url 'about' %}">サイト運営者について</a>
+    </div>
 </div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}検索ページ{% endblock %}
+{% block title %}TopPage | {{ block.super }}{% endblock %}
 {% load static %}
 {% block content %}
     <div class="bg-local w-full h-auto mx-auto" style="background-image: url({% static 'sky.webp' %}); background-color: #049fb6
@@ -21,28 +21,28 @@
         </div>
             <div class="border-t border-neutral-500 mt-6">
                 <h3 class="text-xl my-4 font-bold">サービスの特徴</h3>
-            <ol>
-                <li>1.	検索機能：青空文庫の書籍を簡単に検索できます。</li>
-                <li>2.	レビュー投稿：レビューの投稿には「SignUp」を選んで登録する必要があります。</li>
-                <li>3.	ログイン：一度登録頂くと、次回からは「Login」を選択して情報を入力するだけで可能です。</li>
-                <li>4.	レビュー編集：自分の投稿したレビューは後から編集が可能です。</li>
-                <li>5.	本の閲覧：本の閲覧は検索結果のURLリンクから青空文庫のサイトを開いて行えます。また、本の詳細情報も青空文庫のリンクから可能です。</li>
-                <li>6.	レビューの閲覧:サイトへの登録なしで、どなたでも可能です。</li>
+            <ol class="list-decimal list-outside pl-10">
+                <li>検索機能：青空文庫の書籍を簡単に検索できます。</li>
+                <li>レビュー投稿：レビューの投稿には「SignUp」を選んで登録する必要があります。</li>
+                <li>ログイン：一度登録すると、次回からは「Login」を選択して情報を入力するだけでログインできます。</li>
+                <li>レビュー編集：自分の投稿したレビューは後から編集が可能です。</li>
+                <li>本の閲覧：本の閲覧は検索結果のURLリンクから青空文庫のサイトを開いて行えます。また、本の詳細情報も青空文庫のリンクから可能です。</li>
+                <li>レビューの閲覧:サイトへの登録なしで、どなたでも閲覧可能です。</li>
             </ol>
             </div>
             <div class="border-t border-neutral-500 mt-6">
                 <h3 class="text-xl my-4 font-bold">ご利用方法</h3>
-            <ol>
-                <li>1.	登録：最初に「SignUp」ボタンから登録してください。</li>
-                <li>2.	ログイン：次回からは「Login」ボタンからログインしてください。</li>
-                <li>3.	検索：検索ボックスに書籍名や著者名を入力して検索してください（ひらがなでの検索も可能です）。</li>
-                <li>4.	レビュー投稿：本の詳細ページからレビューを投稿できます。</li>
+            <ol class="list-decimal list-outside pl-10">
+                <li>登録：最初に「SignUp」ボタンから登録してください。</li>
+                <li>ログイン：次回からは「Login」ボタンからログインしてください。</li>
+                <li>検索：検索ボックスに書籍名や著者名を入力して検索してください（ひらがなでの検索も可能です）。</li>
+                <li>レビュー投稿：本の詳細ページからレビューを投稿できます。</li>
             </ol>
             </div>
             <div class="border-t border-neutral-500 mt-6">
                 <h3 class="text-xl my-4 font-bold">利用上の注意</h3>
-                <ol>
-                    <li>このサイトの検索データは2024年7月20日の時点で青空文庫から入手可能なCSVファイルを元にしています。</li>
+                <ol class="pl-6">
+                    <li>このサイトの検索データは2024年7月20日時点で青空文庫から入手可能なCSVファイルに基づきます。</li>
                 </ol>
             </div>
     </div>

@@ -16,3 +16,5 @@ class SearchResultsView(FilterView):
     context_object_name = 'works'
     filterset_class = WorkFilter
 
+class AboutView(TemplateView):
+    template_name = 'about.html'
