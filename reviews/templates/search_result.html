@@ -13,12 +13,12 @@
                     {% for work in works %}
                         <li class="mb-4">
                             <h3 class="text-xl font-semibold">{{ work.title }}{% if work.sub_title %}: {{ work.sub_title }}{% endif %}</h3>
-                            <p>著者: {{ work.author.first_name }} {{ work.author.last_name }}</p>
-                            <p>公開日: {{ work.release_date }}</p>
-                            {% if work.html_url %}
-                            <p>ブラウザ閲覧URL: <a href="{{ work.html_url }}" class="text-blue-500">{{ work.html_url }}</a></p>
-                            {% elif %
-                            <p>テキストファイルダウンロードURL: <a href="{{ work.text_url }}" class="text-blue-500">{{ work.text_url }}</a></p>
+                            <p>著者:  {{ work.author.last_name }} {{ work.author.first_name }}</p>
+                            <p>公開日: {{ work.release_date | date:"Y-m-d"  }}</p>
+                            {% if work.html_file_url %}
+                            <p>ブラウザ閲覧URL: <a href="{{ work.html_file_url }}" class="text-blue-500">{{ work.html_file_url }}</a></p>
+                            {% else %}
+                            <p>テキストファイルダウンロードURL: <a href="{{ work.text_file_url }}" class="text-blue-500">{{ work.text_file_url }}</a></p>
                             {% endif %}
                         </li>
                     {% endfor %}

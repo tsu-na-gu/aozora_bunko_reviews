@@ -6,12 +6,34 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        body, html {
+            height: 100%;
+        }
+        .content {
+            min-height: calc(100vh - 400px);
+        }
+        .footer {
+            height: 100px;
+        }
+    </style>
    {% tailwind_css %}
     <title>{% block title %}{% endblock %}</title>
 </head>
-<body>
+<body class="height: 100% m-0 flex flex-col">
+    {% load static %}
+<header class="flex justify-between bg-blue-600 md:px-20 py-4">
+    <img src="{% static 'site_logo.png' %}" alt="サイトのロゴ">
+    <div class="text-sm md:text-lg text-white"><a href="#">Sign Up</a> | <a href="#">login</a></div>
+</header>
 {% block content %}
-	
+    <div class="flex 1">
+    
+    </div>
 {% endblock %}
+<div class="mt-auto h-[30px] bg-blue-800 flex justify-between text-white md:px-20 pt-2 pb-4 text-sm">
+    <div>Copyright © Hiroaki Satou</div>
+    <div><a href={% url 'index' %}>Home</a></div>
+</div>
 </body>
 </html>
