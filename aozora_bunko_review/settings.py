@@ -13,12 +13,11 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # .envファイルの内容を読み込む
-load_dotenv()
+# load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -42,7 +41,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'django_filters',
-    "reviews"
+    "reviews",
+    "crispy_forms",
+    "crispy_tailwind",
+    "tailwind",
+    "theme"
 ]
 
 MIDDLEWARE = [
@@ -89,6 +92,9 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
+        'TEST': {
+            "NAME": 'test_' + os.getenv('DB_NAME'),
+        },
     }
 }
 
@@ -133,3 +139,14 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+CRISPY_TEMPLATE_PACK = "tailwind"
+
+# TailwindCSS settings
+TAILWIND_APP_NAME = "theme"
+if DEBUG:
+    INTERNAL_IPS = [
+        "127.0.0.1",
+    ]
