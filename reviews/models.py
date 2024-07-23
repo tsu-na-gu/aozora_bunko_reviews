@@ -9,9 +9,16 @@ class Author(models.Model):
     last_name_reading = models.CharField(max_length=100)
     first_name_sorting = models.CharField(max_length=100, null=True, blank=True)
     last_name_sorting = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=100, null=True, blank=True)
+    full_name_reading = models.CharField(max_length=100, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.full_name = f'{self.last_name}{self.first_name or ""}'
+        self.full_name_reading = f'{self.last_name_reading}{self.first_name_reading or ""}'
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.full_name}'
 
 
 class Work(models.Model):
@@ -28,8 +35,12 @@ class Work(models.Model):
     last_updated = models.DateField(null=True, blank=True)
     book_card_url = models.URLField(max_length=200)
     role_flag = models.CharField(max_length=50, default='著者')  # 役割フラグを追加
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='works')
-    translator = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True, related_name='translated_works')
+    authors = models.ManyToManyField(Author,related_name='works', blank=True)
+    translator = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True,
+                                   related_name='translated_works')
+    editor = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True, related_name='edited_works')
+    other_role = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True,
+                                   related_name='other_role_works')
     text_file_url = models.URLField(max_length=200, null=True, blank=True)
     html_file_url = models.URLField(max_length=200, null=True, blank=True)
 
@@ -40,5 +51,9 @@ class Work(models.Model):
         return self.title
 
 
+class FirstPublication(models.Model):
+    work = models.OneToOneField(Work, related_name='first_publication', on_delete=models.CASCADE)
+    publication_info = models.TextField()
 
-
+    def __str__(self):
+        return self.publication_info[:15]
