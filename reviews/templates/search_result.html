@@ -5,25 +5,91 @@
 {% block content %}
 <div class="flex justify-center my-8">
     <div class="w-full max-w-lg">
-        <h1 class="text-2xl font-bold mb-4">検索結果</h1>
+        <h1 class="text-2xl font-bold mb-4">検索結果（作品名読み五十音順）</h1>
 
         {% if works %}
-            <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div class="bg-white shadow-md rounded px-8 pb-4 mb-4">
                 <ul>
                     {% for work in works %}
-                        <li class="mb-4">
-                            <h3 class="text-xl font-semibold">{{ work.title }}{% if work.sub_title %}: {{ work.sub_title }}{% endif %}</h3>
-                            <p>著者:  {{ work.author.last_name }} {{ work.author.first_name }}</p>
-                            <p>公開日: {{ work.release_date | date:"Y-m-d"  }}</p>
-                            {% if work.html_file_url %}
-                            <p>ブラウザ閲覧URL: <a href="{{ work.html_file_url }}" class="text-blue-500">{{ work.html_file_url }}</a></p>
+                        <li class="mb-4 border-t border-neutral-300 pt-4">
+                            <h3 class="text-l font-semibold text-blue-600 hover:text-blue-300 hover:underline"><a href="#" >作品名：{{ work.title }}{% if work.sub_title %}: {{ work.sub_title }}{% endif %}</a></h3>
+                            {% if work.authors_count > 1 %}
+                                {% for author in work.authors.all %}
+                                    <p>共著者：{% if author.last_name %}{{ author.last_name }}{% else %}不明{% endif %} {% if author.first_name %}{{ author.first_name }}{% endif %}</p>
+                                {% endfor %}
+                            {% elif work.authors_count == 1 %}
+                                    <p>著者：{{ work.single_author.last_name }} {% if work.single_author.first_name %}{{ work.single_author.first_name }}{% endif %}</p>
                             {% else %}
-                            <p>テキストファイルダウンロードURL: <a href="{{ work.text_file_url }}" class="text-blue-500">{{ work.text_file_url }}</a></p>
+                                    <p>著者：不明</p>
+                            {% endif %}
+                            <P>青空文庫の本の詳細情報への<a class="text-neutral-400 hover:text-neutral-500 hover:underline" href="{{ work.book_card_url }}">リンク</a></P>
+                            {% if work.html_file_url %}
+                                <p>書籍閲覧<a href="{{ work.html_file_url }}" class="text-neutral-400 hover:text-neutral-500 hover:underline">リンク</a></p>
+                            {% else %}
+                            <p>テキストファイルダウンロード<a href="{{ work.text_file_url }}" class="text-neutral-400 hover:text-neutral-500 hover:underline">リンク</a></p>
                             {% endif %}
                         </li>
                     {% endfor %}
                 </ul>
             </div>
+             <!-- ページネーションリンクを表示 -->
+        <div class="pagination flex justify-center">
+            <nav aria-label="Page navigation">
+                <ul class="inline-flex space-x-2">
+                    {% if page_obj.has_previous %}
+                        <li>
+                            <a href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+                               class="text-blue-500 hover:text-blue-700">
+                                &laquo; 最初へ
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+                               class="text-blue-500 hover:text-blue-700">
+                                 &lt;前へ
+                            </a>
+                        </li>
+                    {% elif page_obj.has_next %}
+                        <li class="text-neutral-200">
+                                &laquo; 最初へ
+                        </li>
+                        <li class="text-neutral-200">
+                                 &lt;前へ
+                        </li>
+                    {% endif %}
+
+                    {% if page_obj.has_previous or page_obj.has_next %}
+                    <li>
+                        <span class="text-neutral-700">
+                            ページ {{ page_obj.paginator.num_pages }}の{{ page_obj.number }}
+                        </span>
+                    </li>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                        <li>
+                            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+                               class="text-blue-500 hover:text-blue-700">
+                                 次へ&gt;
+                            </a>
+                        </li>
+                        <li>
+                            <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+                               class="text-blue-500 hover:text-blue-700">
+                                最後へ &raquo;
+                            </a>
+                        </li>
+                    {% elif page_obj.has_previous %}
+                        <li class="text-neutral-200">
+                                 次へ&gt;
+                        </li>
+                        <li class="text-neutral-200">
+                                最後へ &raquo;
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
         {% else %}
             <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <p class="text-red-500">該当する作品が見つかりませんでした。</p>

@@ -20,6 +20,14 @@ class Author(models.Model):
     def __str__(self):
         return f'{self.full_name}'
 
+    
+class NDC_Classification(models.Model):
+    ndc_code = models.CharField(max_length=10, unique=True)
+    genre = models.CharField(max_length=500, null=True, blank=True)
+
+    def __str__(self):
+        return self.ndc_code
+
 
 class Work(models.Model):
     title = models.CharField(max_length=256)
@@ -43,7 +51,10 @@ class Work(models.Model):
                                    related_name='other_role_works')
     text_file_url = models.URLField(max_length=200, null=True, blank=True)
     html_file_url = models.URLField(max_length=200, null=True, blank=True)
-
+    genre_info1 = models.ForeignKey(NDC_Classification, null=True, blank=True, on_delete=models.SET_NULL,
+                                    related_name='primary_works')
+    genre_info2 = models.ForeignKey(NDC_Classification, null=True, blank=True, on_delete=models.SET_NULL,
+                                    related_name='secondary_works')
     class Meta:
         unique_together = (('title', 'sub_title'),)
 
@@ -57,3 +68,5 @@ class FirstPublication(models.Model):
 
     def __str__(self):
         return self.publication_info[:15]
+
+

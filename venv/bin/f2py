@@ -1,4 +1,4 @@
-#!/Users/tsu-na-gu/Documents/django_projects/aozora_bunko_review/venv/bin/python3.12
+#!/Users/tsu-na-gu/Documents/django_projects/aozora_bunko_review/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
