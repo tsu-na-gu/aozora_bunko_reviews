@@ -11,6 +11,7 @@ class Author(models.Model):
     last_name_sorting = models.CharField(max_length=100)
     full_name = models.CharField(max_length=100, null=True, blank=True)
     full_name_reading = models.CharField(max_length=100, null=True, blank=True)
+    wikipedia_link = models.URLField(max_length=200, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.full_name = f'{self.last_name}{self.first_name or ""}'
@@ -28,6 +29,17 @@ class NDC_Classification(models.Model):
     def __str__(self):
         return self.ndc_code
 
+
+class BaseTextInfo(models.Model):
+    base_text_name = models.CharField(max_length=500)
+    base_text_publisher = models.CharField(max_length=256, null=True, blank=True)
+    base_text_publish_year = models.CharField(max_length=100, null=True, blank=True)
+    parent_text_name = models.CharField(max_length=500, null=True, blank=True)
+    parent_text_publisher = models.CharField(max_length=256, null=True, blank=True)
+    parent_text_publish_year = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return self.base_text_name
 
 class Work(models.Model):
     title = models.CharField(max_length=256)
@@ -55,9 +67,10 @@ class Work(models.Model):
                                     related_name='primary_works')
     genre_info2 = models.ForeignKey(NDC_Classification, null=True, blank=True, on_delete=models.SET_NULL,
                                     related_name='secondary_works')
-    class Meta:
-        unique_together = (('title', 'sub_title'),)
+    base_text_info = models.ForeignKey(BaseTextInfo, null=True, blank=True, on_delete=models.SET_NULL, related_name='base_text_info')
 
+    class Meta:
+        unique_together = (('title', 'sub_title', 'original_title', 'book_card_url'),)
     def __str__(self):
         return self.title
 

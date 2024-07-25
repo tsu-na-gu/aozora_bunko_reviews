@@ -12,21 +12,29 @@
                 <ul>
                     {% for work in works %}
                         <li class="mb-4 border-t border-neutral-300 pt-4">
-                            <h3 class="text-l font-semibold text-blue-600 hover:text-blue-300 hover:underline"><a href="#" >作品名：{{ work.title }}{% if work.sub_title %}: {{ work.sub_title }}{% endif %}</a></h3>
+                            <h3 class="text-l font-semibold text-blue-600 hover:text-blue-300 hover:underline"><a href="{% url 'book_detail' work.pk %}" >作品名：{{ work.title }}{% if work.sub_title %}: {{ work.sub_title }}{% endif %}</a></h3>
                             {% if work.authors_count > 1 %}
+
                                 {% for author in work.authors.all %}
-                                    <p>共著者：{% if author.last_name %}{{ author.last_name }}{% else %}不明{% endif %} {% if author.first_name %}{{ author.first_name }}{% endif %}</p>
+                                    <p><strong>共著者：</strong>{% if author.last_name %}{{ author.last_name }}{% else %}不明{% endif %} {% if author.first_name %}{{ author.first_name }}{% endif %}</p>
                                 {% endfor %}
                             {% elif work.authors_count == 1 %}
-                                    <p>著者：{{ work.single_author.last_name }} {% if work.single_author.first_name %}{{ work.single_author.first_name }}{% endif %}</p>
+                                <p><strong>著者：</strong>{{ work.single_author.last_name }} {% if work.single_author.first_name %}{{ work.single_author.first_name }}{% endif %}</p>
                             {% else %}
-                                    <p>著者：不明</p>
+                                    <p><strong>著者：</strong>不明</p>
+                            {% endif %}
+                            <P><strong>文字違い種別：</strong>{{ work.character_usage }}</P>
+                            {% if work.genre_info1 %}
+                             <p><strong>ジャンル: </strong>{{ work.genre_info1.genre }}</p>
+                            {% endif %}
+                            {% if work.genre_info2 %}
+                             <p><strong>ジャンル2: </strong>{{ work.genre_info2.genre }}</p>
                             {% endif %}
                             <P>青空文庫の本の詳細情報への<a class="text-neutral-400 hover:text-neutral-500 hover:underline" href="{{ work.book_card_url }}">リンク</a></P>
                             {% if work.html_file_url %}
-                                <p>書籍閲覧<a href="{{ work.html_file_url }}" class="text-neutral-400 hover:text-neutral-500 hover:underline">リンク</a></p>
+                                <p>書籍閲覧への<a href="{{ work.html_file_url }}" class="text-neutral-400 hover:text-neutral-500 hover:underline">リンク</a></p>
                             {% else %}
-                            <p>テキストファイルダウンロード<a href="{{ work.text_file_url }}" class="text-neutral-400 hover:text-neutral-500 hover:underline">リンク</a></p>
+                            <p>テキストファイルダウンロードへの<a href="{{ work.text_file_url }}" class="text-neutral-400 hover:text-neutral-500 hover:underline">リンク</a></p>
                             {% endif %}
                         </li>
                     {% endfor %}

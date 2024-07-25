@@ -22,10 +22,11 @@
 </head>
 <body class="height: 100% m-0 flex flex-col">
     {% load static %}
-<header class="flex justify-between bg-blue-600 md:px-20 py-4">
-    <img src="{% static 'site_logo.png' %}" alt="サイトのロゴ">
-    <div class="text-sm md:text-lg text-white"><a href="#">Sign Up</a> | <a href="#">login</a></div>
-</header>
+    <header class="flex bg-blue-600 md:px-20 py-4 gap-4 flex-col md:flex-row justify-between items-center">
+        <img src="{% static 'site_logo.png' %}" alt="サイトのロゴ">
+        <div class="text-md md:hidden text-white"><a href="#">Sign Up</a> | <a href="#">login</a></div>
+        <div class="hidden md:block text-md md:text-lg text-white"><a href="#">Sign Up</a> | <a href="#">login</a></div>
+    </header>
 {% block content %}
     <div class="flex 1">
     

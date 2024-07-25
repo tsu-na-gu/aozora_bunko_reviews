@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}本の詳細 | {{ block.super }}{% endblock %}
+{% block content %}
+    <div class="mt-5 flex item-center justify-center">
+        <div class="cover min-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-yellow-50 w-full h-full p-4">
+            <div class="border-4 border-blue-900 w-full h-full p-4">
+                <div class="inner-cover border border-blue-800 p-6 w-full h-full flex flex-col justify-center items-center">
+                    <h1 class="title text-blue-900 font-serif text-2xl mt-40 {% if not work.sub_title %}mb-40{% endif %}">{{ work.title }}</h1>
+                    {% if work.sub_title %}<h2 class="text-blue-900 font-serif text-xl mt-4 mb-36">{{  work.sub_title }}</h2>{% endif %}
+                    <div class="{% if authors_count > 1%}mb-6{% else %}mb-20{% endif %}">
+                    {% for author in work.authors.all %}
+                    <p class="author text-blue-900 font-serif text-xl mt-4">{{ author.last_name }}{% if author.first_name %}&#12288;{{ author.first_name }}{% endif %}</p>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="min-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full h-full p-4 mx-auto mt-10">
+        <div class="bg-white shadow-lg rounded-lg">
+            <div class="p-4">
+
+                <p class="text-xl text-gay-900"><strong>作品名</strong>：{{ work.title }}</p>
+                <div>
+
+                    <p class="text-gray-700"><strong>作品名の読み:</strong> {{ work.title_reading }}</p>
+                        <div class="relative flex items-center my-2">
+                        <div class="flex-grow border-t border-gray-300"></div>
+                        <span class="flex-shrink mx-4 text-gray-500 bg-white px-2">著者情報</span>
+                        <div class="flex-grow border-t border-gray-300"></div>
+                    </div>
+                         {% if work.sub_title %}
+                            <p class="text-gray-700"><strong>副題:</strong> {{ work.sub_title }}</p>
+                            <p class="text-gray-700"><strong>副題読み:</strong> {{ work.sub_title_reading }}</p>
+                        {% endif %}
+                        {% if authors_count > 1 %}
+                            {% for author in authors %}
+                                <p><strong>共著者：</strong>{% if author.last_name %}{{ author.last_name }}{% else %}不明{% endif %} {% if author.first_name %}{{ author.first_name }}{% endif %}</p>
+                                <p class="text-gray-700"><strong>著者名読み:</strong>
+                                    {% if author.last_name_reading %}{{ author.last_name_reading }}{% endif %}
+                                    {% if author.first_name_reading %}{{ author.first_name_reading }}{% endif %}
+                                </p>
+                                {% if author.wikipedia_link %}
+                                    <p class="text-gray-700">著者のWikipediaへの<a class="text-neutral-400 hover:text-neutral-500 hover:underline" href="{{ author.wikipedia_link }}">リンク</a></p>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        {% if single_author %}
+                                <p><strong>著者：</strong>{{ single_author.last_name }} {% if single_author.first_name %}{{ single_author.first_name }}{% endif %}</p>
+                                <p class="text-gray-700"><strong>読み:</strong>
+                                    {% if single_author.last_name_reading %}{{ single_author.last_name_reading }}{% endif %}
+                                    {% if single_author.first_name_reading %}{{ single_author.first_name_reading }}{% endif %}
+                                </p>
+                                 {% if single_author.wikipedia_link %}
+                                    <p class="text-gray-700"><strong>著者のWikipedia</strong>：&nbsp;<a class="text-neutral-400 hover:text-neutral-500 hover:underline" href="{{ single_author.wikipedia_link }}">リンク</a></p>
+                                {% endif %}
+                        {% else %}
+                            <p><strong>著者：</strong>不明</p>
+                        {% endif %}
+                        <div class="relative flex items-center my-2">
+                        <div class="flex-grow border-t border-gray-300"></div>
+                        <span class="flex-shrink mx-4 text-gray-500 bg-white px-2">文字種・ジャンル情報</span>
+                        <div class="flex-grow border-t border-gray-300"></div>
+                        </div>
+                    <P><strong>文字違い種別：</strong>{{ work.character_usage }}</P>
+
+                    {% if genre_info1 %}<p class="text-gray-700"><strong>ジャンル:</strong> {{ genre_info1 }}</p>{% endif %}
+                    {% if genre_info2 %}<p class="text-gray-700"><strong>ジャンル2:</strong> {{ genre_info2 }}</p>{% endif %}
+                    <div class="relative flex items-center my-2">
+                        <div class="flex-grow border-t border-gray-300"></div>
+                        <span class="flex-shrink mx-4 text-gray-500 bg-white px-2">出版情報</span>
+                        <div class="flex-grow border-t border-gray-300"></div>
+                    </div>
+                    {% if first_publication %}<p class="text-gray-700"><strong>初出:</strong>{{ first_publication.publication_info }}</p>{% endif %}
+                    {% if work.translator %}
+                    <p class="text-gray-700"><strong>翻訳者:</strong>
+                        {{ work.translator.last_name }}{% if work.translator.first_name %} {{ work.translator.first_name }}{% endif %}
+                    </p>
+                    {% endif %}
+
+                    {% if work.editor %}
+                    <p class="text-gray-700"><strong>編集者:</strong>
+                        {{ work.editor.last_name }}{% if work.editor.first_name %} {{ work.editor.first_name }}{% endif %}
+                    </p>
+                    {% endif %}
+
+                    {% if work.other_role %}
+                    <p class="text-gray-700"><strong>その他の役割:</strong>
+                        {{ work.other_role.last_name }}{% if work.other_role.first_name %} {{ work.other_role.first_name }}{% endif %}
+                    </p>
+                    {% endif %}
+                    <p><strong>著作権の有無:</strong>{% if work.copyright_flag %}あり{% else %}なし{% endif %}</p>
+                     {% if first_publication_info %}
+                        <p><strong>初出:</strong> {{ first_publication_info }}</p>
+                     {% endif %}
+                    {% if base_text_info %}
+                        <p><strong>底本名:</strong> {{ base_text_info.base_text_name }}</p>
+                        {% if base_text_info.base_text_publisher %}
+                            <p><strong>底本出版社名:</strong> {{ base_text_info.base_text_publisher }}</p>
+                        {% endif %}
+                        {% if base_text_info.base_text_publish_year %}
+                            <p><strong>底本初版発行年:</strong> {{ base_text_info.base_text_publish_year }}</p>
+                        {% endif %}
+                        {% if base_text_info.parent_text_name %}
+                            <p><strong>親本名:</strong> {{ base_text_info.parent_text_name }}</p>
+                        {% endif %}
+                        {% if base_text_info.parent_text_publisher %}
+                            <p><strong>親本出版社名:</strong> {{ base_text_info.parent_text_publisher }}</p>
+                        {% endif %}
+                        {% if base_text_info.parent_text_publish_year %}
+                            <p><strong>親本初版発行年:</strong> {{ base_text_info.parent_text_publish_year }}</p>
+                        {% endif %}
+                    {% endif %}
+                    <div class="relative flex items-center my-2">
+                        <div class="flex-grow border-t border-gray-300"></div>
+                        <span class="flex-shrink mx-4 text-gray-500 bg-white px-2">青空文庫へのリンク</span>
+                        <div class="flex-grow border-t border-gray-300"></div>
+                    </div>
+                    <P>青空文庫の本の詳細情報への<a class="text-neutral-400 hover:text-neutral-500 hover:underline" href="{{ work.book_card_url }}">リンク</a></P>
+                            {% if work.html_file_url %}
+                                <p>書籍閲覧への<a href="{{ work.html_file_url }}" class="text-neutral-400 hover:text-neutral-500 hover:underline">リンク</a></p>
+                            {% endif %}
+                    {% if work.text_file_url %}
+                            <p>テキストファイルダウンロードへの<a href="{{ work.text_file_url }}" class="text-neutral-400 hover:text-neutral-500 hover:underline">リンク</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

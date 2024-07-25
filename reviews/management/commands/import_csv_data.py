@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 import pandas as pd
-from reviews.models import Author, Work, FirstPublication
+from reviews.models import Author, Work, FirstPublication, BaseTextInfo
 
 def convert_nan_to_none(value):
     if pd.isna(value):
@@ -15,11 +15,12 @@ class Command(BaseCommand):
         FirstPublication.objects.all().delete()
         Work.objects.all().delete()
         Author.objects.all().delete()
+        BaseTextInfo.objects.all().delete()
 
         df = pd.read_csv('reviews/management/commands/list_person_all_extended_utf8.csv')
 
         # NaNをNoneに変換
-        df = df.apply(lambda x: x.map(convert_nan_to_none) if x.dtype == "O" else x)
+        df = df.applymap(lambda x: None if pd.isna(x) else x)
 
         for index, row in df.iterrows():
             if not row['テキストファイルURL'] and not row['XHTML/HTMLファイルURL']:
@@ -39,11 +40,23 @@ class Command(BaseCommand):
                         'first_name_sorting': row['名読みソート用'],
                     }
                 )
-
-                # 必要に応じてfull_nameとfull_name_readingを更新
                 author.full_name = f'{author.last_name}{author.first_name or ""}'
                 author.full_name_reading = f'{author.last_name_reading}{author.first_name_reading or ""}'
                 author.save()
+
+            # 底本情報の設定
+            base_text_info = None
+            if row['底本名1']:
+                base_text_info, _ = BaseTextInfo.objects.get_or_create(
+                    base_text_name=row['底本名1'],
+                    defaults={
+                        'base_text_publisher': row['底本出版社名1'],
+                        'base_text_publish_year': row['底本初版発行年1'],
+                        'parent_text_name': row['底本の親本名1'],
+                        'parent_text_publisher': row['底本の親本出版社名1'],
+                        'parent_text_publish_year': row['底本の親本初版発行年1']
+                    }
+                )
 
             # Workオブジェクトのデフォルト値
             work_defaults = {
@@ -58,16 +71,19 @@ class Command(BaseCommand):
                 'last_updated': row['最終更新日'],
                 'book_card_url': row['図書カードURL'],
                 'text_file_url': row['テキストファイルURL'],
-                'html_file_url': row['XHTML/HTMLファイルURL']
+                'html_file_url': row['XHTML/HTMLファイルURL'],
+                'base_text_info': base_text_info  # 底本情報を関連付け
             }
 
+            # 既存のWorkを取得または作成
             work, created = Work.objects.get_or_create(
                 title=row['作品名'],
                 sub_title=row['副題'],
+                original_title=row['原題'],
+                book_card_url=row['図書カードURL'],
                 defaults=work_defaults
             )
 
-            # 既存のWorkを更新する場合
             if not created:
                 for key, value in work_defaults.items():
                     setattr(work, key, value)
@@ -84,6 +100,13 @@ class Command(BaseCommand):
 
             work.save()
 
-            self.stdout.write(self.style.SUCCESS(f'Successfully imported work {work.id}'))
+            # FirstPublicationの登録
+            if row['初出']:
+                first_publication, created = FirstPublication.objects.get_or_create(
+                    work=work,
+                    defaults={
+                        'publication_info': row['初出']
+                    }
+                )
 
         self.stdout.write(self.style.SUCCESS('Data import completed successfully.'))

@@ -8,10 +8,10 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # 児童文学がNDC分類にあるか確認
         try:
-            children_literature = NDC_Classification.objects.get(genre='児童文学')
+            children_literature = NDC_Classification.objects.get(genre='児童書')
         except NDC_Classification.DoesNotExist:
             self.stdout.write(self.style.ERROR(
-                '児童文学のジャンルが見つかりません。まず create_children_literature コマンドを実行してください。'))
+                '児童書のジャンルが見つかりません。まず create_children_literature コマンドを実行してください。'))
             return
 
         # すべてのWorkオブジェクトのgenre_info1とgenre_info2を空にする
