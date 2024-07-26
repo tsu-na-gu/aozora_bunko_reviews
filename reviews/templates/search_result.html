@@ -12,7 +12,7 @@
                 <ul>
                     {% for work in works %}
                         <li class="mb-4 border-t border-neutral-300 pt-4">
-                            <h3 class="text-l font-semibold text-blue-600 hover:text-blue-300 hover:underline"><a href="{% url 'book_detail' work.pk %}" >作品名：{{ work.title }}{% if work.sub_title %}: {{ work.sub_title }}{% endif %}</a></h3>
+                            <h3 class="text-l font-semibold text-blue-600 hover:text-blue-300 hover:underline"><a href="{% url 'book_detail' work.pk %}?page={{ page_obj.number }}&q={{ search_query }}" >作品名：{{ work.title }}{% if work.sub_title %}: {{ work.sub_title }}{% endif %}</a></h3>
                             {% if work.authors_count > 1 %}
 
                                 {% for author in work.authors.all %}

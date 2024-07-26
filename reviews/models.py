@@ -1,4 +1,8 @@
 from django.db import models
+from django.contrib import auth
+from tailwind.validate import ValidationError
+
+
 
 
 class Author(models.Model):
@@ -81,5 +85,26 @@ class FirstPublication(models.Model):
 
     def __str__(self):
         return self.publication_info[:15]
+
+
+def validate_rating(value):
+    if value < 1 or value > 5:
+        raise ValidationError("It must be between 1 and 5.")
+
+
+class Review(models.Model):
+    title = models.CharField(max_length=255)
+    rating = models.IntegerField(validators=[validate_rating])
+    content = models.TextField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_edited = models.DateTimeField(null=True, blank=True)
+    is_spoiler = models.BooleanField(default=False)
+    creator = models.ForeignKey(
+        auth.get_user_model(),  on_delete=models.CASCADE, related_name="review_user"
+    )
+    book = models.ForeignKey(
+        Work, on_delete=models.CASCADE, related_name="review_book"
+    )
+
 
 

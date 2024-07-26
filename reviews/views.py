@@ -25,6 +25,9 @@ class SearchResultsView(FilterView):
             work.authors_count = work.authors.count()
             if work.authors_count == 1:
                 work.single_author = work.authors.first()
+
+        context['search_query'] = self.request.GET.get('q', '')
+
         return context
 
 
@@ -40,6 +43,7 @@ class BookDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         work = self.get_object()
+
         authors = work.authors.all()
 
         authors_wikipedia_links = []
@@ -57,4 +61,9 @@ class BookDetailView(DetailView):
             context['single_author'] = context['authors'].first()
         else:
             context['single_author'] = None
+
+        context['page'] = self.request.GET.get('page')
+
+        context['search_query'] = self.request.GET.get('q', None)
+        context['reviews'] = work.review_book.all()
         return context

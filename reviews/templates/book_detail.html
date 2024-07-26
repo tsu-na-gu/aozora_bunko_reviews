@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 {% block title %}本の詳細 | {{ block.super }}{% endblock %}
 {% block content %}
-    <div class="mt-5 flex item-center justify-center">
+    <div class="flex justify-between items-center py-4 px-20">
+        {% if search_query %}
+            <a href="{% url 'search_result' %}?page={{  page }}&q={{ search_query }}" class="text-blue-600 hover:text_blue-800 hover:underline">検索結果に戻る</a>
+        {% else %}
+            <a href="{%  url 'index' %}" class="text-blue-600 hover:text_blue-800 hover:underline">ホームに戻る</a>
+        {% endif %}
+    </div>
+    <div class="flex item-center justify-center">
         <div class="cover min-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-yellow-50 w-full h-full p-4">
             <div class="border-4 border-blue-900 w-full h-full p-4">
                 <div class="inner-cover border border-blue-800 p-6 w-full h-full flex flex-col justify-center items-center">
@@ -16,7 +23,8 @@
             </div>
         </div>
     </div>
-        <div class="min-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full h-full p-4 mx-auto mt-10">
+
+        <div class="min-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full h-full p-4 mx-auto mt-6">
         <div class="bg-white shadow-lg rounded-lg">
             <div class="p-4">
 
@@ -127,4 +135,59 @@
             </div>
         </div>
     </div>
+
+    {% if reviews %}
+    <div class="min-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full h-full p-4 mx-auto mt-6">
+        <h1 class="text-2xl font-bold mb-4">レビュー</h1>
+        {% for review in reviews %}
+            <div class="flex flex-col bg-white shadow-lg rounded-lg p-4">
+                <div class="flex flex-col items-center justify-left mb-4 gap-2">
+                    <h3 class="text-xl text-neutral-700 font-bold">{{ review.title }}</h3>
+                    {% load review_tags %}
+                    <div class="flex">
+                        {% render_stars review.rating %}
+                    </div>
+                </div>
+                <div class="leading-20">
+                     {{ review.content }}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="flex justify-center m-4">
+            {% if user.is_authenticated %}
+                <div class="w-1/2">
+                 <a href="#" class="bg-blue-600 text-md text-white hover:bg-blue-800 px-4 py-2 rounded-md">レビューを投稿する</a>
+                </div>
+            {% else %}
+                <div class="w-1/2">
+                    <a href="#" class="bg-red-600 text-md text-white hover:bg-red-800 px-4 py-2 rounded-md">レビューを投稿するにはサインアップ</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+        <div class="text-center mb-6">
+        <h3 class="mt-2 text-sm font-semibold text-gray-900">この本のレビューした人はまだ一人もいません。</h3>
+        <p class="mt-1 mb-2 text-sm text-gray-500">あなたが一人目の投稿者になってみませんか？</p>
+        <span class="mt-6">
+        <button type="button" class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+      <svg class="-ml-0.5 mr-1.5 h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+      </svg>
+        　<span>
+            {% if user.is_authenticated %}
+                <a href="#">レビューを投稿する</a>
+            {% else %}
+                <a href="#">レビューを投稿するにはサインアップ</a>
+            {% endif %}
+        </span>
+    </button>
+    </span>
+    </div>
+
+    {% endif %}
+
+
+
+
 {% endblock %}
