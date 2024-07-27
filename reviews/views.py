@@ -10,6 +10,13 @@ from reviews.models import Work
 class IndexView(TemplateView):
     template_name = 'index.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        show_success_dialog = self.request.GET.get('new_user') == 'true'
+        context['show_success_dialog'] = show_success_dialog
+
+        return context
+
 
 class SearchResultsView(FilterView):
     model = Work

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+サインイン | {{ block.super }}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto w-full mt-10">
+    
+<form method="post" class="space-y-4">
+    {% csrf_token %}
+    
+    <div id="div_id_username" class="mb-3"> 
+        <label for="id_username" class="block text-gray-700 text-sm font-bold mb-2">
+            ユーザー名<span class="asteriskField">*</span> 
+        </label> 
+        <input type="text" name="username" class="border border-gray-300 p-2 rounded w-full textinput border focus:outline-none py-2 leading-normal w-full block rounded-lg appearance-none text-gray-700 border-gray-300 px-4 bg-white" maxlength="150" autofocus required aria-describedby="id_username_helptext" id="id_username"> 
+        <small id="id_username_helptext" class="text-gray-600">この項目は必須です。半角アルファベット、半角数字、@/./+/-/_ で150文字以下にしてください。</small> 
+    </div> 
+    
+    <div id="div_id_email" class="mb-3"> 
+        <label for="id_email" class="block text-gray-700 text-sm font-bold mb-2">
+            メールアドレス
+        </label> 
+        <input type="email" name="email" class="border border-gray-300 p-2 rounded w-full emailinput border focus:outline-none py-2 leading-normal w-full block rounded-lg appearance-none text-gray-700 border-gray-300 px-4 bg-white" maxlength="254" id="id_email"> 
+    </div> 
+    
+    <div id="div_id_password1" class="mb-3"> 
+        <label for="id_password1" class="block text-gray-700 text-sm font-bold mb-2">
+            パスワード<span class="asteriskField">*</span> 
+        </label> 
+        <input type="password" name="password1" autocomplete="new-password" class="passwordinput border focus:outline-none py-2 leading-normal w-full block rounded-lg appearance-none text-gray-700 border-gray-300 px-4 bg-white" required aria-describedby="id_password1_helptext" id="id_password1"> 
+        <small id="id_password1_helptext" class="text-gray-600">
+            <ul>
+                <li>あなたの他の個人情報と似ているパスワードにはできません。</li>
+                <li>パスワードは最低 8 文字以上必要です。</li>
+                <li>よく使われるパスワードにはできません。</li>
+                <li>数字だけのパスワードにはできません。</li>
+            </ul>
+        </small> 
+    </div> 
+    
+    <div id="div_id_password2" class="mb-3"> 
+        <label for="id_password2" class="block text-gray-700 text-sm font-bold mb-2">
+            パスワード確認<span class="asteriskField">*</span> 
+        </label> 
+        <input type="password" name="password2" class="border border-gray-300 p-2 rounded w-full passwordinput border focus:outline-none py-2 leading-normal w-full block rounded-lg appearance-none text-gray-700 border-gray-300 px-4 bg-white" required id="id_password2"> 
+    </div>
+
+    <button type="submit" class="btn btn-primary bg-blue-500 text-white p-2 rounded">登録</button>
+</form>
+</div>
+{% endblock %}

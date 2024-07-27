@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}本の詳細 | {{ block.super }}{% endblock %}
 {% block content %}
-    <div class="flex justify-between items-center py-4 px-20">
+    <div class="flex justify-between items-center py-4 md:px-20">
         {% if search_query %}
             <a href="{% url 'search_result' %}?page={{  page }}&q={{ search_query }}" class="text-blue-600 hover:text_blue-800 hover:underline">検索結果に戻る</a>
         {% else %}
@@ -155,11 +155,11 @@
         {% endfor %}
         <div class="flex justify-center m-4">
             {% if user.is_authenticated %}
-                <div class="w-1/2">
+                <div class="w-80">
                  <a href="#" class="bg-blue-600 text-md text-white hover:bg-blue-800 px-4 py-2 rounded-md">レビューを投稿する</a>
                 </div>
             {% else %}
-                <div class="w-1/2">
+                <div class="w-80">
                     <a href="#" class="bg-red-600 text-md text-white hover:bg-red-800 px-4 py-2 rounded-md">レビューを投稿するにはサインアップ</a>
                 </div>
             {% endif %}

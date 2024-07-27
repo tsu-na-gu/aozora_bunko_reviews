@@ -11,6 +11,26 @@
                     <span class="hidden md:inline">ようこそ、このサイトでは</span>
                     <br/>青空文庫の検索とレビューの投 稿が可能です。</h1>
     </div>
+{% if show_success_dialog %}
+<div id="success-dialog" class="fixed inset-0 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+        <div class="text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">アカウント作成に成功しました</h3>
+            <div class="mt-2">
+                <p class="text-sm text-gray-500">ようこそ、{{ request.user.username }} さん！</p>
+            </div>
+        </div>
+        <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-1 sm:gap-3">
+            <button type="button" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:col-start-1" onclick="document.getElementById('success-dialog').style.display='none'">閉じる</button>
+        </div>
+    </div>
+</div>
+{% endif %}
     <div class="m-4 md:m-20">
 
         <div class="flex justify-center mb-8 mx-auto md:w-1/3">

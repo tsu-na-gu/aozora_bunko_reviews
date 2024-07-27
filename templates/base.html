@@ -24,9 +24,19 @@
     {% load static %}
     <header class="flex bg-blue-600 md:px-20 py-4 gap-4 flex-col md:flex-row justify-between items-center">
         <img src="{% static 'site_logo.png' %}" alt="サイトのロゴ">
-        <div class="text-md md:hidden text-white"><a href="#">Sign Up</a> | <a href="#">login</a></div>
-        <div class="hidden md:block text-md md:text-lg text-white"><a href="#">Sign Up</a> | <a href="#">login</a></div>
+        <div class="hidden md:block text-md md:text-lg text-white"><a href="{% url 'signup' %}" class="hover:bg-blue-800 hover:rounded-md hover:py-2">Sign Up</a>&nbsp;|&nbsp;
+            {% if user.is_authenticated %}
+                <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+                    {% csrf_token %}
+            </form>
+            <a href="#" onclick="document.getElementById('logout-form').submit();">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">login</a>
+            {%  endif %}
+        </div>
     </header>
+    
+{% include "message.html" %}
 {% block content %}
     <div class="flex 1">
     
