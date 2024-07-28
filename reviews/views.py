@@ -1,9 +1,11 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView, DetailView
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.views.generic import TemplateView, DetailView, ListView, FormView
 from django_filters.views import FilterView
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
-from reviews.filters import WorkFilter
+from reviews.filters import WorkFilter, DetailSearchFilter
+from reviews.forms import DetailSearchForm
 from reviews.models import Work
 
 
@@ -33,9 +35,10 @@ class SearchResultsView(FilterView):
             if work.authors_count == 1:
                 work.single_author = work.authors.first()
 
-        context['search_query'] = self.request.GET.get('q', '')
+        context['search_query'] = self.request.GET.urlencode()
 
         return context
+
 
 
 class AboutView(TemplateView):
@@ -71,6 +74,37 @@ class BookDetailView(DetailView):
 
         context['page'] = self.request.GET.get('page')
 
-        context['search_query'] = self.request.GET.get('q', None)
+        context['search_query'] = self.request.GET.urlencode()
         context['reviews'] = work.review_book.all()
+        return context
+
+
+class DetailSearchView(FormView):
+    template_name = 'detail_search.html'
+    form_class = DetailSearchForm
+
+    def form_valid(self, form):
+        query_params = form.cleaned_data
+        query_params['q'] = 'detail_search'  # クエリにqパラメータを追加
+        query_string = "&".join([f"{key}={value}" for key, value in query_params.items() if value])
+        return redirect(f"{reverse('detail_search_results')}?{query_string}")
+
+
+class DetailSearchResultView(FilterView):
+    model = Work
+    template_name = 'detail_search_result.html'
+    context_object_name = 'works'
+    filterset_class = DetailSearchFilter
+    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        works = context['page_obj']
+        for work in works:
+            work.authors_count = work.authors.count()
+            if work.authors_count == 1:
+                work.single_author = work.authors.first()
+
+        context['search_query'] = self.request.GET.urlencode()
+
         return context

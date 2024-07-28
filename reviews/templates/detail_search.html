@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}詳細検索{% endblock %}
+{% load tailwind_filters %}
+{% block content %}
+  <h1 class="text-2xl font-bold mt-4 ml-4">詳細検索</h1>
+<form method="post" class="space-y-4 mx-2 md:mx-20 mt-4">
+      <p>下記の検索欄のうち検索条件に含めたい項目だけを入力ください。</p>
+    {% csrf_token %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div id="div_id_title" class="mb-3">
+            <label for="id_title" class="block text-gray-700 text-sm font-bold mb-2">書籍名</label>
+            <input type="text" name="title" class="textinput py-2 border px-4 leading-normal rounded-lg text-gray-700 appearance-none border-gray-300 w-full bg-white block focus:outline-none" id="id_title">
+        </div>
+        <div id="div_id_title_reading" class="mb-3">
+            <label for="id_title_reading" class="block text-gray-700 text-sm font-bold mb-2">書籍名（ひらがな読み）</label>
+            <input type="text" name="title_reading" class="textinput py-2 border px-4 leading-normal rounded-lg text-gray-700 appearance-none border-gray-300 w-full bg-white block focus:outline-none" id="id_title_reading">
+        </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div id="div_id_author_last_name" class="mb-3">
+            <label for="id_author_last_name" class="block text-gray-700 text-sm font-bold mb-2">著者の姓</label>
+            <input type="text" name="author_last_name" class="textinput py-2 border px-4 leading-normal rounded-lg text-gray-700 appearance-none border-gray-300 w-full bg-white block focus:outline-none" id="id_author_last_name">
+        </div>
+        <div id="div_id_author_first_name" class="mb-3">
+            <label for="id_author_first_name" class="block text-gray-700 text-sm font-bold mb-2">著者の名</label>
+            <input type="text" name="author_first_name" class="textinput py-2 border px-4 leading-normal rounded-lg text-gray-700 appearance-none border-gray-300 w-full bg-white block focus:outline-none" id="id_author_first_name">
+        </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div id="div_id_author_last_name_reading" class="mb-3">
+            <label for="id_author_last_name_reading" class="block text-gray-700 text-sm font-bold mb-2">著者の姓（ひらがな読み）</label>
+            <input type="text" name="author_last_name_reading" class="textinput py-2 border px-4 leading-normal rounded-lg text-gray-700 appearance-none border-gray-300 w-full bg-white block focus:outline-none" id="id_author_last_name_reading">
+        </div>
+        <div id="div_id_author_first_name_reading" class="mb-3">
+            <label for="id_author_first_name_reading" class="block text-gray-700 text-sm font-bold mb-2">著者の名（ひらがな読み）</label>
+            <input type="text" name="author_first_name_reading" class="textinput py-2 border px-4 leading-normal rounded-lg text-gray-700 appearance-none border-gray-300 w-full bg-white block focus:outline-none" id="id_author_first_name_reading">
+        </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div id="div_id_translator_last_name" class="mb-3">
+            <label for="id_translator_last_name" class="block text-gray-700 text-sm font-bold mb-2">翻訳者の姓</label>
+            <input type="text" name="translator_last_name" class="textinput py-2 border px-4 leading-normal rounded-lg text-gray-700 appearance-none border-gray-300 w-full bg-white block focus:outline-none" id="id_translator_last_name">
+        </div>
+        <div id="div_id_translator_first_name" class="mb-3">
+            <label for="id_translator_first_name" class="block text-gray-700 text-sm font-bold mb-2">翻訳者の名</label>
+            <input type="text" name="translator_first_name" class="textinput py-2 border px-4 leading-normal rounded-lg text-gray-700 appearance-none border-gray-300 w-full bg-white block focus:outline-none" id="id_translator_first_name">
+        </div>
+    </div>
+   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div id="div_id_translator_last_name_reading" class="mb-3">
+            <label for="id_translator_last_name_reading" class="block text-gray-700 text-sm font-bold mb-2">翻訳者の姓（ひらがな読み）</label>
+            <input type="text" name="translator_last_name_reading" class="textinput py-2 border px-4 leading-normal rounded-lg text-gray-700 appearance-none border-gray-300 w-full bg-white block focus:outline-none" id="id_translator_last_name_reading">
+        </div>
+        <div id="div_id_translator_first_name_reading" class="mb-3">
+            <label for="id_translator_first_name_reading" class="block text-gray-700 text-sm font-bold mb-2">翻訳者の名（ひらがな読み）</label>
+            <input type="text" name="translator_first_name_reading" class="textinput py-2 border px-4 leading-normal rounded-lg text-gray-700 appearance-none border-gray-300 w-full bg-white block focus:outline-none" id="id_translator_first_name">
+        </div>
+    </div>
+    <div id="div_id_character_usage" class="mb-3 w-32">
+        <label for="id_character_usage" class="block text-gray-700 text-sm font-bold mb-2">仮名遣い</label>
+        <div class="relative">
+            <select class="bg-white focus:outline-none border border-gray-300 rounded-lg py-2 px-4 block w-full appearance-none leading-normal text-gray-700" name="character_usage" id="id_character_usage">
+                <option value="" selected>---------</option>
+                <option value="新字旧仮名">新字旧仮名</option>
+                <option value="旧字旧仮名">旧字旧仮名</option>
+                <option value="新字新仮名">新字新仮名</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">検索</button>
+</form>
+{% endblock %}

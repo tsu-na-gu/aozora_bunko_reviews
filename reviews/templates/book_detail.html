@@ -2,8 +2,10 @@
 {% block title %}本の詳細 | {{ block.super }}{% endblock %}
 {% block content %}
     <div class="flex justify-between items-center py-4 md:px-20">
-        {% if search_query %}
-            <a href="{% url 'search_result' %}?page={{  page }}&q={{ search_query }}" class="text-blue-600 hover:text_blue-800 hover:underline">検索結果に戻る</a>
+        {% if 'detail_search' in search_query %}
+            <a href="{% url 'detail_search_results' %}?{{ search_query }}" class="text-blue-600 hover:text_blue-800 hover:underline">検索結果に戻る</a>
+        {% elif search_query %}
+            <a href="{% url 'search_result' %}?{{ search_query }}" class="text-blue-600 hover:text_blue-800 hover:underline">検索結果に戻る</a>
         {% else %}
             <a href="{%  url 'index' %}" class="text-blue-600 hover:text_blue-800 hover:underline">ホームに戻る</a>
         {% endif %}
@@ -29,18 +31,22 @@
             <div class="p-4">
 
                 <p class="text-xl text-gay-900"><strong>作品名</strong>：{{ work.title }}</p>
-                <div>
+                {% if work.sub_title %}
+                            <p class="text-gray-700"><strong>副題:</strong> {{ work.sub_title }}</p>
+                            <p class="text-gray-700"><strong>副題読み:</strong> {{ work.sub_title_reading }}</p>
+                        {% endif %}
+                        {% if work.original_title %}
+                            <p class="text-gray-700"><strong>原著：</strong>{{ work.original_title }}</p>
+                        {% endif %}
+
 
                     <p class="text-gray-700"><strong>作品名の読み:</strong> {{ work.title_reading }}</p>
                         <div class="relative flex items-center my-2">
                         <div class="flex-grow border-t border-gray-300"></div>
                         <span class="flex-shrink mx-4 text-gray-500 bg-white px-2">著者情報</span>
                         <div class="flex-grow border-t border-gray-300"></div>
-                    </div>
-                         {% if work.sub_title %}
-                            <p class="text-gray-700"><strong>副題:</strong> {{ work.sub_title }}</p>
-                            <p class="text-gray-700"><strong>副題読み:</strong> {{ work.sub_title_reading }}</p>
-                        {% endif %}
+                        </div>
+
                         {% if authors_count > 1 %}
                             {% for author in authors %}
                                 <p><strong>共著者：</strong>{% if author.last_name %}{{ author.last_name }}{% else %}不明{% endif %} {% if author.first_name %}{{ author.first_name }}{% endif %}</p>

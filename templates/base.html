@@ -16,25 +16,57 @@
         .footer {
             height: 100px;
         }
+        .btn-inset-shadow {
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
     </style>
    {% tailwind_css %}
     <title>{% block title %}Aozora Bunko Reviews{% endblock %}</title>
 </head>
 <body class="height: 100% m-0 flex flex-col">
     {% load static %}
-    <header class="flex bg-blue-600 md:px-20 py-4 gap-4 flex-col md:flex-row justify-between items-center">
-        <img src="{% static 'site_logo.png' %}" alt="サイトのロゴ">
-        <div class="hidden md:block text-md md:text-lg text-white"><a href="{% url 'signup' %}" class="hover:bg-blue-800 hover:rounded-md hover:py-2">Sign Up</a>&nbsp;|&nbsp;
+    <header class="flex bg-blue-600 px-2 md:px-20 py-4 gap-4 flex-row justify-between items-center">
+        <a href="{% url 'index' %}"><img src="{% static 'site_logo.png' %}" alt="サイトのロゴ"></a>
+        <button id="menu-button" class="text-white focus:outline-none md:hidden">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+        <nav id="menu" class="hidden md:flex md:items-center text-sm gap-1">
             {% if user.is_authenticated %}
-                <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+                <a href="{% url 'profile' %}" class="btn-inset-shadow text-white p-2  rounded-lg rounded-bl-lg hover:bg-blue-400">プロフィール</a>
+                <form id="logout-form" action="{% url 'logout' %}" method="post" class="inline">
                     {% csrf_token %}
-            </form>
-            <a href="#" onclick="document.getElementById('logout-form').submit();">Logout</a>
+                    <button type="submit" class="btn-inset-shadow text-white p-2  rounded-lg rounded-br-lg hover:bg-blue-400">ログアウト</button>
+                </form>
             {% else %}
-                <a href="{% url 'login' %}">login</a>
-            {%  endif %}
-        </div>
-    </header>
+                <a href="{% url 'login' %}" class="btn-inset-shadow text-white p-2 rounded-lg hover:bg-blue-400">ログイン</a>
+                <a href="{% url 'signup' %}" class="btn-inset-shadow text-white p-2 rounded-lg hover:bg-blue-400">サインアップ</a>
+            {% endif %}
+        </nav>
+            </header>
+
+    <div id="mobile-menu" class="hidden md:hidden flex flex-col justify-center items-end bg-blue-700">
+            {% if user.is_authenticated %}
+                <hr/>
+            <a href="{% url 'profile' %}" class="block text-white p-2 text-center w-full hover:bg-blue-800">プロフィール</a>
+                  <hr/>
+            <form id="mobile-logout-form" action="{% url 'logout' %}" method="post" class="block">
+                {% csrf_token %}
+              
+                <button type="submit" class="relative text-white text-center p-2 w-full hover:bg-blue-800">ログアウト</button>
+            <hr/>
+            </form>
+            {% else %}
+                <hr/>
+            <a href="{% url 'login' %}" class="block text-white p-2 text-center w-full hover:bg-blue-800">ログイン</a>
+                <hr/>
+            <a href="{% url 'signup' %}" class="block text-white p-2 text-center w-full hover:bg-blue-800">サインアップ</a>
+                <hr/>
+            {% endif %}
+    </div>
     
 {% include "message.html" %}
 {% block content %}
@@ -42,6 +74,16 @@
     
     </div>
 {% endblock %}
+<script>
+document.getElementById('menu-button').addEventListener('click', function () {
+    var menu = document.getElementById('mobile-menu');
+    if (menu.style.display === 'none' || menu.style.display === '') {
+        menu.style.display = 'block';
+    } else {
+        menu.style.display = 'none';
+    }
+});
+</script>
 <div class="mt-auto h-[30px] bg-blue-800 flex justify-between text-white md:px-20 pt-2 pb-4 text-sm">
     <div>Copyright © Hiroaki Satou</div>
     <div class="flex gap-4 ">
