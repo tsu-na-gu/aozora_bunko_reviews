@@ -1,12 +1,17 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, DetailView, ListView, FormView
+from django.views.generic import TemplateView, DetailView, ListView, FormView, CreateView
 from django_filters.views import FilterView
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
+
+from account.models import ReviewHistory
 from reviews.filters import WorkFilter, DetailSearchFilter
-from reviews.forms import DetailSearchForm
-from reviews.models import Work
+from reviews.forms import DetailSearchForm, ReviewForm
+from reviews.models import Work, Review
+from django.utils.html import escape
+from reviews.utils import SearchHistoryManager, keep_latest_page_param
 
 
 class IndexView(TemplateView):
@@ -26,6 +31,7 @@ class SearchResultsView(FilterView):
     context_object_name = 'works'
     filterset_class = WorkFilter
     paginate_by = 10
+    search_history_manager = SearchHistoryManager()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -35,7 +41,11 @@ class SearchResultsView(FilterView):
             if work.authors_count == 1:
                 work.single_author = work.authors.first()
 
-        context['search_query'] = self.request.GET.urlencode()
+        search_query = keep_latest_page_param(self.request.GET.urlencode())
+        context['search_query'] = escape(search_query)
+
+        # 'page' パラメータがない場合のみ検索履歴に保存
+        self.search_history_manager.save_search_history(self.request.user, self.request)
 
         return context
 
@@ -74,7 +84,8 @@ class BookDetailView(DetailView):
 
         context['page'] = self.request.GET.get('page')
 
-        context['search_query'] = self.request.GET.urlencode()
+        search_query = keep_latest_page_param(self.request.GET.urlencode())
+        context['search_query'] = escape(search_query)
         context['reviews'] = work.review_book.all()
         return context
 
@@ -96,6 +107,7 @@ class DetailSearchResultView(FilterView):
     context_object_name = 'works'
     filterset_class = DetailSearchFilter
     paginate_by = 10
+    search_history_manager = SearchHistoryManager()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -105,6 +117,50 @@ class DetailSearchResultView(FilterView):
             if work.authors_count == 1:
                 work.single_author = work.authors.first()
 
-        context['search_query'] = self.request.GET.urlencode()
+        context['search_query'] = keep_latest_page_param(self.request.GET.urlencode())
+
+        # 'page' パラメータがない場合のみ検索履歴に保存
+        self.search_history_manager.save_search_history(self.request.user, self.request)
 
         return context
+
+class ReviewCreateView(LoginRequiredMixin, CreateView):
+    model = Review
+    form_class = ReviewForm
+    template_name = 'review_form.html'
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        book_id = self.kwargs.get('book_id')
+        book = get_object_or_404(Work, pk=book_id)
+        form.instance.book = book
+        return form
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book_id = self.kwargs.get('book_id')
+        context["book"] = get_object_or_404(Work, pk=book_id)
+        search_query = keep_latest_page_param(self.request.GET.urlencode())
+        context['search_query'] = escape(search_query)
+
+        return context
+
+    def get_success_url(self):
+        search_query = escape(self.request.GET.urlencode())
+        if search_query:
+            return f"{reverse('book_detail', kwargs={'pk': self.object.book.pk})}?{search_query}"
+        return reverse('book_ditail', kwargs={'pk' : self.object.book.pk})
+
+    def form_valid(self, form):
+        form.instance.creator = self.request.user
+        response = super().form_valid(form)
+
+        ReviewHistory.objects.create(
+            user = self.request.user,
+            review=form.instance,
+            review_url=reverse('book_detail', kwargs={'pk': form.instance.book.pk}),
+        )
+
+        return response
+
+

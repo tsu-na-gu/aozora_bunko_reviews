@@ -1,8 +1,7 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.contrib import auth
 from tailwind.validate import ValidationError
-
-from account.models import Profile
 
 
 class Author(models.Model):
@@ -93,10 +92,9 @@ def validate_rating(value):
 
 
 class Review(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='reviews')
-    title = models.CharField(max_length=255, default='')
+    title = models.CharField(max_length=255)
     rating = models.IntegerField(validators=[validate_rating])
-    content = models.TextField(default='')
+    content = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
     date_edited = models.DateTimeField(null=True, blank=True)
     is_spoiler = models.BooleanField(default=False)

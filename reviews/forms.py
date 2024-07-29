@@ -1,5 +1,8 @@
 from django import forms
 
+from reviews.models import Review
+
+
 class DetailSearchForm(forms.Form):
     title = forms.CharField(required=False, label='書籍名')
     title_reading = forms.CharField(required=False, label='書籍名（読み）')
@@ -16,3 +19,18 @@ class DetailSearchForm(forms.Form):
         ('旧字旧仮名', '旧字旧仮名'),
         ('新字新仮名', '新字新仮名'),
     ], label='仮名遣い')
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['title', 'rating', 'content', 'is_spoiler']
+        labels = {
+            'title': 'タイトル',
+            'rating': '1〜５で評価',
+            'content': 'レビュー内容',
+            'is_spoiler': 'ネタバレを含む'
+        }
+        widgets = {
+            'rating': forms.Select(choices=[(i, i) for i in range(1, 6)]),
+        }
