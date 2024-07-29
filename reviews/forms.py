@@ -19,6 +19,8 @@ class DetailSearchForm(forms.Form):
         ('旧字旧仮名', '旧字旧仮名'),
         ('新字新仮名', '新字新仮名'),
     ], label='仮名遣い')
+    is_children_book = forms.BooleanField(required=False, label='児童書')
+
 
 
 class ReviewForm(forms.ModelForm):

@@ -19,6 +19,14 @@
         .btn-inset-shadow {
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
         }
+        .spoiler {
+              filter: blur(5px);
+              transition: filter 0.3s;
+            }
+        
+        .spoiler.visible {
+              filter: none;
+        }
     </style>
    {% tailwind_css %}
     <title>{% block title %}Aozora Bunko Reviews{% endblock %}</title>

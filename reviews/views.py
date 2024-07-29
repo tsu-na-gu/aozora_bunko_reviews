@@ -149,7 +149,7 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
         search_query = escape(self.request.GET.urlencode())
         if search_query:
             return f"{reverse('book_detail', kwargs={'pk': self.object.book.pk})}?{search_query}"
-        return reverse('book_ditail', kwargs={'pk' : self.object.book.pk})
+        return reverse('book_detail', kwargs={'pk' : self.object.book.pk})
 
     def form_valid(self, form):
         form.instance.creator = self.request.user

@@ -144,8 +144,25 @@
 
     {% if reviews %}
     <div class="min-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full h-full p-4 mx-auto mt-6">
-        <h1 class="text-2xl font-bold mb-4">レビュー</h1>
+        <div class="flex justify-between">
+            <h1 class="text-2xl font-bold mb-4">レビュー</h1>
+            <button id="toggle_spoiler_button" class="text-neutral-400 hover:text-neutral-600 hover:underline" onclick="toggleSpoiler(this)">ネタバレを表示する</button>
+        </div>
         {% for review in reviews %}
+            {% if review.is_spoiler %}
+                <div class="spoiler flex flex-col bg-white shadow-lg rounded-lg p-4">
+                    <div class="flex flex-col items-center justify-left mb-4 gap-2">
+                        <h3 class="text-xl text-neutral-700 font-bold">{{ review.title }}</h3>
+                        {% load review_tags %}
+                        <div class="flex">
+                            {% render_stars review.rating %}
+                        </div>
+                    </div>
+                    <div class="leading-20">
+                         {{ review.content }}
+                    </div>
+                </div>
+            {% else %}
             <div class="flex flex-col bg-white shadow-lg rounded-lg p-4">
                 <div class="flex flex-col items-center justify-left mb-4 gap-2">
                     <h3 class="text-xl text-neutral-700 font-bold">{{ review.title }}</h3>
@@ -158,18 +175,17 @@
                      {{ review.content }}
                 </div>
             </div>
+            {% endif %}
         {% endfor %}
-        <div class="flex justify-center m-4">
             {% if user.is_authenticated %}
-                <div class="w-80">
-                 <a href="#" class="bg-blue-600 text-md text-white hover:bg-blue-800 px-4 py-2 rounded-md">レビューを投稿する</a>
+                <div class="w-80 my-4">
+                 <a href="{% url 'review_create' book_id=work.pk %}" class="bg-blue-600 text-md text-white hover:bg-blue-800 px-4 py-2 rounded-md">レビューを投稿する</a>
                 </div>
             {% else %}
-                <div class="w-80">
-                    <a href="#" class="bg-red-600 text-md text-white hover:bg-red-800 px-4 py-2 rounded-md">レビューを投稿するにはサインアップ</a>
+                <div class="w-full m-4">
+                    <a href="{% url 'signup' %}" class="bg-blue-600 text-md text-white hover:bg-blue-800 px-4 py-2 rounded-md">レビューを投稿するにはサインアップかログインが必要です</a>
                 </div>
             {% endif %}
-        </div>
     </div>
     {% else %}
         <div class="text-center mb-6">
@@ -184,7 +200,7 @@
             {% if user.is_authenticated %}
                 <a href="{% url 'review_create' work.pk %}">レビューを投稿する</a>
             {% else %}
-                <a href="#">レビューを投稿するにはサインアップ</a>
+                <a href="{% url 'signup' %}">レビューを投稿するにはサインアップかログインして下さい。</a>
             {% endif %}
         </span>
     </button>
@@ -193,7 +209,18 @@
 
     {% endif %}
 
-
+<script>
+function toggleSpoiler(button) {
+    const spoilers = document.querySelectorAll('.spoiler');
+    spoilers.forEach(spoiler => {spoiler.classList.toggle('visible')});
+    const spoiler_button = document.querySelector('#toggle_spoiler_button');
+    if (spoiler_button .textContent === 'ネタバレを表示する') {
+        spoiler_button.textContent = 'ネタバレを隠す';
+    } else {
+        spoiler_button.textContent = 'ネタバレを表示する';
+    }
+}
+</script>
 
 
 {% endblock %}

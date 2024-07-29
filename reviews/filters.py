@@ -1,5 +1,6 @@
 import django_filters
 from django.db.models import Q
+from django import forms  # 追加
 
 from reviews.models import Work
 
@@ -102,6 +103,8 @@ class DetailSearchFilter(django_filters.FilterSet):
         ],
         label='仮名遣い'
     )
+    is_children_book = django_filters.BooleanFilter(
+        field_name='genre_info1_id', method='filter_children_book', label='児童書', widget=forms.CheckboxInput)
 
     class Meta:
         model = Work
@@ -109,5 +112,10 @@ class DetailSearchFilter(django_filters.FilterSet):
             'title', 'title_reading', 'author_last_name', 'author_first_name',
             'author_last_name_reading', 'author_first_name_reading',
             'translator_last_name', 'translator_first_name',
-            'character_usage'
+            'character_usage', 'is_children_book'
         ]
+
+    def filter_children_book(self, queryset, name, value):
+        if value:
+            return queryset.filter(**{name: 19427})
+        return queryset
