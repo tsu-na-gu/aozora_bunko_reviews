@@ -140,7 +140,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     {% if reviews %}
     <div class="min-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full h-full p-4 mx-auto mt-6">
@@ -161,7 +160,11 @@
                     <div class="leading-20">
                          {{ review.content }}
                     </div>
+                {% if user == review.creator %}
+                <div class="mt-4">
+                   <a href="{% url 'review_edit' review_id=review.id book_id=work.id %}" class="mt-4 text-blue-600 hover:text-blue-800 hover:underline">レビューの編集</a>
                 </div>
+                {% endif %}
             {% else %}
             <div class="flex flex-col bg-white shadow-lg rounded-lg p-4">
                 <div class="flex flex-col items-center justify-left mb-4 gap-2">
@@ -173,17 +176,21 @@
                 </div>
                 <div class="leading-20">
                      {{ review.content }}
+                {% if user == review.creator %}
+                <div class="mt-4">
+                   <a href="{% url 'review_edit' review_id=review.id book_id=work.id %}" class="text-blue-600 hover:text-blue-800 hover:underline">レビューの編集</a>
                 </div>
-            </div>
+                {% endif %}
             {% endif %}
+        </div>
         {% endfor %}
             {% if user.is_authenticated %}
                 <div class="w-80 my-4">
-                 <a href="{% url 'review_create' book_id=work.pk %}" class="bg-blue-600 text-md text-white hover:bg-blue-800 px-4 py-2 rounded-md">レビューを投稿する</a>
+                 <a href="{% url 'review_create' book_id=work.id %}?{{ search_query }}" class="bg-blue-600 text-md text-white hover:bg-blue-800 px-4 py-2 rounded-md">レビューを投稿する</a>
                 </div>
             {% else %}
                 <div class="w-full m-4">
-                    <a href="{% url 'signup' %}" class="bg-blue-600 text-md text-white hover:bg-blue-800 px-4 py-2 rounded-md">レビューを投稿するにはサインアップかログインが必要です</a>
+                    <a href="{% url 'account_signup' %}" class="bg-blue-600 text-md text-white hover:bg-blue-800 px-4 py-2 rounded-md">レビューを投稿するにはサインアップかログインが必要です</a>
                 </div>
             {% endif %}
     </div>
@@ -198,13 +205,14 @@
       </svg>
         　<span>
             {% if user.is_authenticated %}
-                <a href="{% url 'review_create' work.pk %}">レビューを投稿する</a>
+                <a href="{% url 'review_create' book_id=work.id %}?{{ search_query }}">レビューを投稿する</a>
             {% else %}
-                <a href="{% url 'signup' %}">レビューを投稿するにはサインアップかログインして下さい。</a>
+                <a href="{% url 'account_signup' %}">レビューを投稿するにはサインアップかログインして下さい。</a>
             {% endif %}
         </span>
     </button>
     </span>
+    </div>
     </div>
 
     {% endif %}

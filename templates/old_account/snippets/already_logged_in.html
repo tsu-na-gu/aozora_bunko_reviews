@@ -1,0 +1,9 @@
+{% load i18n %}
+{% load account %}
+{% load allauth %}
+{% user_display user as user_display %}
+{% element alert %}
+    {% slot message %}
+        <strong>注意：</strong>あなたは既に {{ user_display }}.としてログインしています。
+    {% endslot %}
+{% endelement %}

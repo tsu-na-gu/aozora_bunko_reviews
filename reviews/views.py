@@ -1,12 +1,14 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils import timezone
+from allauth.account.views import ConfirmEmailView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, DetailView, ListView, FormView, CreateView
+from django.views.generic import TemplateView, DetailView, ListView, FormView, CreateView, UpdateView
 from django_filters.views import FilterView
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
-
-from account.models import ReviewHistory
+from django.contrib import messages
+from user_account.models import ReviewHistory
 from reviews.filters import WorkFilter, DetailSearchFilter
 from reviews.forms import DetailSearchForm, ReviewForm
 from reviews.models import Work, Review
@@ -139,7 +141,7 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         book_id = self.kwargs.get('book_id')
-        context["book"] = get_object_or_404(Work, pk=book_id)
+        context["book_id"] = book_id
         search_query = keep_latest_page_param(self.request.GET.urlencode())
         context['search_query'] = escape(search_query)
 
@@ -148,19 +150,64 @@ class ReviewCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         search_query = escape(self.request.GET.urlencode())
         if search_query:
-            return f"{reverse('book_detail', kwargs={'pk': self.object.book.pk})}?{search_query}"
-        return reverse('book_detail', kwargs={'pk' : self.object.book.pk})
+            return f"{reverse('book_detail', kwargs={'pk': self.kwargs.get('book_id')})}?{search_query}"
+        return reverse('book_detail', kwargs={'pk': self.kwargs.get('book_id')})
 
     def form_valid(self, form):
+        review = form.save(commit=False)
+        book_id = self.kwargs.get('book_id')
+        review.book = get_object_or_404(Work, pk=book_id)
+        review.creator = self.request.user
+        review.save()
+        messages.success(self.request, 'レビューが投稿されました。')
         form.instance.creator = self.request.user
-        response = super().form_valid(form)
 
         ReviewHistory.objects.create(
             user = self.request.user,
-            review=form.instance,
-            review_url=reverse('book_detail', kwargs={'pk': form.instance.book.pk}),
+            review=review,
+            review_url=reverse('book_detail', kwargs={'pk':self.kwargs.get('book_id')}),
         )
 
-        return response
+        return super().form_valid(form)
+
+
+class ReviewUpdateView(UserPassesTestMixin, UpdateView):
+    model = Review
+    template_name = 'review_form.html'
+    form_class = ReviewForm
+
+
+    def get_object(self, queryset=None):
+        review_id = self.kwargs.get('review_id')
+        return get_object_or_404(Review, id=review_id)
+
+    def test_func(self):
+        review = self.get_object()
+        return review.creator == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        search_query = keep_latest_page_param(self.request.GET.urlencode())
+        context['search_query'] = escape(search_query)
+        context['is_edited'] = True
+        book_id = self.kwargs.get('book_id')
+        context["book_id"] = book_id
+        context["review_id"] = self.object.id
+        return context
+
+    def get_success_url(self):
+        search_query = self.request.GET.urlencode()
+        base_url = reverse('book_detail', kwargs={'pk': self.kwargs.get('book_id')})
+        query_string = f"?{search_query}" if search_query else ""
+        return f"{base_url}?{query_string}"
+
+    def form_valid(self, form):
+        review = form.save(commit=False)
+        review.data_edited = timezone.now()
+        review.save()
+        messages.success(self.request, 'レビューが更新されました。')
+        return super().form_valid(form)
+
+
 
 

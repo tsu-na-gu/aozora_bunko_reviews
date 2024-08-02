@@ -1,6 +1,6 @@
 from django.http import QueryDict
 
-from account.models import SearchHistory
+from user_account.models import SearchHistory
 from django.utils.html import escape
 from urllib.parse import urlencode, parse_qs
 

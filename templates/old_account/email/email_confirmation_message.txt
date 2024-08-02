@@ -1,0 +1,14 @@
+{% extends "account/email/base_message.txt" %} {% load account %} {% load i18n %}
+{% load custom_filters %}
+{% block content %}{% autoescape off %}
+こんにちは、{{ user|user_display }}さん。
+
+aozora bunko reviewへの登録ありがとうございます。サインアップを完了するには、
+下記のリンクをクリックしてください。
+{{ activate_url }}
+
+登録に身に覚えのない方がいましたら、このメールのURLはクリックしないでください。
+このメールには返信しないでください。
+ご質問がある場合は、https://www.aozora-bunko-reviews サイト下部にある
+「このサイトの運営者について」のリンクをクリックして表示されたメールアドレスに連絡してください。
+{% endautoescape %}{% endblock %}

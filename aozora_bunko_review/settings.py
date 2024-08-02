@@ -16,19 +16,19 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# .envファイルの内容を読み込む
-# load_dotenv()
+#\q.envファイルの内容を読み込む
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-ey92_q4k-9q+(bqbc9fw^zy612*q5(t9%95txdxf2v!hq_3gk#"
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['debian-s-1vcpu-1gb-sgp1-01']
 
 
 # Application definition
@@ -46,7 +46,14 @@ INSTALLED_APPS = [
     "crispy_tailwind",
     "tailwind",
     "theme",
-    "account"
+    "user_account",
+    "django.contrib.sites",
+    "allauth_ui",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "widget_tweaks",
+    "slippers",
 ]
 
 MIDDLEWARE = [
@@ -57,6 +64,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "aozora_bunko_review.urls"
@@ -92,8 +100,9 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
-        'TEST': {
-            "NAME": 'test_' + os.getenv('DB_NAME'),
+        'OPTIONS':{
+            'sslmode': os.getenv('require'),
+            'sslrootcert': os.getenv('DB_SLAS'),
         },
     }
 }
@@ -133,10 +142,9 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = "/static/"
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
     os.path.join(BASE_DIR, 'theme/static'),
 ]
 
@@ -156,3 +164,32 @@ if DEBUG:
     INTERNAL_IPS = [
         "127.0.0.1",
     ]
+
+# django-allauth config
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('MAILERSEND_SMTP_SERVER')
+EMAIL_PORT = os.getenv('MAILERSEND_SMTP_PORT')
+EMAIL_USE_TLS = True  # TLSを使用する場合はTrue
+EMAIL_USE_SSL = False # SSLを使用する場合はTrue
+EMAIL_HOST_USER = os.getenv('MAILERSEND_SMTP_USERNAME')
+EMAIL_HOST_PASSWORD = os.getenv('MAILERSEND_SMTP_PASSWORD')
+DEFAULT_FROM_EMAIL = "no-reply@trial-pq3enl6e98842vwr.mlsender.net"
+
+
+ACCOUNT_SESSION_REMEMBER = True
+
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1  # 確認メールの有効期限を0日に設定
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_PASSWORD_RESET_REDIRECT_URL = '/old_account/login/'
+
+ALLAUTH_UI_THEME = "light"
